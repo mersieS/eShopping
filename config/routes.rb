@@ -23,11 +23,13 @@ Rails.application.routes.draw do
 
       resources :orders do
         collection do
+          get 'get_by_username'
           post 'set_order_status'
+          post 'cancel_order'
         end
       end
   end
-  
+
   scope 'api' do
     mount_devise_token_auth_for 'User', at: 'auth'
   end

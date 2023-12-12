@@ -18,5 +18,5 @@ class Order < ApplicationRecord
         next_status_index = (Order.order_statuses[current_status] + 1) % Order.order_statuses.length
         next_status = Order.order_statuses.keys[next_status_index]
         self.update(order_status: next_status)
-      end
+    end
 end
