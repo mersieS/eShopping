@@ -12,12 +12,8 @@ module Api
 
 		def add_cart
 			if !@product.blank? && !@cart.nil?
-				if @product_quantity > 0
-					@cart.add_product(@product)
-					render json: {data: "Product Added to Cart"}, status: :ok
-				else
-					render json: {data: "Product quantity not enough"}
-				end
+				@cart.add_product(@product)
+				render json: {data: "Product Added to Cart"}, status: :ok
 			else
 				render json: "Bad Request", status: :bad_request
 			end

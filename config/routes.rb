@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
 
   namespace "api" do
-
       resources :products do
         collection do
             get 'get_by_name'
@@ -22,8 +21,13 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :orders
+      resources :orders do
+        collection do
+          post 'set_order_status'
+        end
+      end
   end
+  
   scope 'api' do
     mount_devise_token_auth_for 'User', at: 'auth'
   end
