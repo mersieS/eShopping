@@ -21,6 +21,8 @@ Rails.application.routes.draw do
           delete 'remove_cart'
         end
       end
+
+      resources :orders
   end
   scope 'api' do
     mount_devise_token_auth_for 'User', at: 'auth'

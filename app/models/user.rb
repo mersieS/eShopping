@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
   enum role: %i[user admin superadmin]
 
   has_one :cart, dependent: :destroy
+  has_many :orders, dependent: :destroy
   after_create :create_cart
 
   validates :name, presence: true
