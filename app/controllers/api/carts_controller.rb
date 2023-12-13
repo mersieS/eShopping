@@ -35,12 +35,13 @@ module Api
 				if @order.save
 					@cart.cart_items.each do |cart_item|
 						@order.add_product(cart_item.product)
-						render json: "Provide accepted"
-
-						@cart.cart_items.each do |cart_item|
-							cart_item.destroy
-						end
 					end
+
+					@cart.cart_items.each do |cart_item|
+						cart_item.destroy
+					end
+					
+					render json: "Provide accepted"
 				else
 					render json: @order.errors
 				end

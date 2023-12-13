@@ -29,14 +29,26 @@ module Api
 
         def set_order_status
             if @order && (@order_status != "delivered")
-                @order.set_order_status
-                if (@order_status == "approved")
+                if (@order_status == "pending")
+                    @control = true
                     @order.order_items.each do |order_item|
                         @product = order_item.product
-					    @product.update(quantity: (@product.quantity - 1))
+                        if (@product.quantity > 0)
+					        @product.update(quantity: (@product.quantity - 1))
+                        else
+                            render json: "Product quantitiy not enough"
+                            @control = false
+                            break
+                        end
                     end
+                    if @control
+                        @order.set_order_status
+                        render json: @order
+                    end
+                else
+                    @order.set_order_status
+                    render json: @order
                 end
-                render json: @order
             elsif (@order_status == "delivered")
                 render json: "Order already delivered"
             else
