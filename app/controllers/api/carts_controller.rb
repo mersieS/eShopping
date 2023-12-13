@@ -44,7 +44,7 @@ module Api
 					render json: "Provide accepted"
 				else
 					render json: @order.errors
-				end
+				endrails
 			else
 				render json: "Cart is empty"
 			end

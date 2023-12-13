@@ -1,7 +1,10 @@
 module Api
     class CategoriesController < ApplicationController
+        require_relative '../../security_operation/role_module.rb'
         before_action :get_category, only: %i[update show destroy]
         before_action :authenticate_user!
+        before_action -> {check_user_roles(RoleModule.admin_and_super_admin)}, only: %i[update create destroy]
+        before_action -> {check_user_roles(RoleModule.all_roles)}, only: %i[index show get_by_name]
 
         def index
             @categories = Category.order(created_at: :asc)

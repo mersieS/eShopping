@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
+    require_relative '../security_operation/security_operation.rb'
     include DeviseTokenAuth::Concerns::SetUserByToken
     include Pundit::Authorization
+    include SecurityOperation
 
     skip_before_action :verify_authenticity_token
     before_action :configure_permitted_parameters, if: :devise_controller?

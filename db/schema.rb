@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_12_051540) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_13_205637) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -89,6 +89,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_12_051540) do
     t.index ["category_id"], name: "index_products_on_category_id"
   end
 
+  create_table "roles", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_roles", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["role_id"], name: "index_user_roles_on_role_id"
+    t.index ["user_id"], name: "index_user_roles_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -123,4 +138,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_12_051540) do
   add_foreign_key "order_items", "products"
   add_foreign_key "orders", "users"
   add_foreign_key "products", "categories"
+  add_foreign_key "user_roles", "roles"
+  add_foreign_key "user_roles", "users"
 end
