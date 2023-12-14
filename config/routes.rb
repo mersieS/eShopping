@@ -18,6 +18,7 @@ Rails.application.routes.draw do
           get 'provide'
           post 'add_cart'
           delete 'remove_cart'
+          delete 'empty_the_cart'
         end
       end
 

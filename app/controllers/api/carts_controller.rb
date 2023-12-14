@@ -9,15 +9,17 @@ module Api
 		before_action -> {check_user_roles(["user"])}
 
 		def index
-			render json: @cart.as_json(include: {cart_items: {include: :product}})
+			render :index, status: :ok
 		end
 
 		def add_cart
 			if !@product.blank? && !@cart.nil?
 				@cart.add_product(@product)
-				render json: {data: "Product Added to Cart"}, status: :ok
+				@message = "Product Added To Cart"
+				render 'show_message', status: :ok
 			else
-				render json: "Bad Request", status: :bad_request
+				@message = "Product not find"
+				render 'error', status: :bad_request
 			end
 		end
 
@@ -25,9 +27,21 @@ module Api
 			if @cart && @cart_item
 				@cart.remove_product(@cart_item)
 				@message = "Product Removed from Cart"
-				render json: @message, status: :ok
+				render 'show_message', status: :ok
 			else
-				render json: "Bad request", status: :bad_request
+				@message = "Cart Item Not Found"
+				render 'error', status: :bad_request
+			end
+		end
+
+		def empty_the_cart
+			if !@cart.cart_items.blank?
+				@cart.cart_items.destroy_all
+				@message = "Cart emptied"
+				render 'show_message', status: :ok
+			else
+				@message = "Cart already empty"
+				render 'error', status: :not_found
 			end
 		end
 
@@ -42,13 +56,15 @@ module Api
 					@cart.cart_items.each do |cart_item|
 						cart_item.destroy
 					end
-					
-					render json: "Provide accepted"
+					@message = "Provide accepted"
+					render 'show_message', status: :ok
 				else
-					render json: @order.errors
+					@message = @order.errors
+					render 'error', status: :bad_request
 				end
 			else
-				render json: "Cart is empty"
+				@message = "Cart is empty"
+				render 'error', status: :not_found
 			end
 		end
 		
@@ -68,7 +84,7 @@ module Api
 		end
 
 		def get_product
-			@product = Product.find_by(id: params[:id])
+			@product = Product.find_by(id: params[:product_id])
 		end
 	end
 end
