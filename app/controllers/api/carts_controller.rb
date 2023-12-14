@@ -1,10 +1,12 @@
 module Api
 	class CartsController < ApplicationController
+		require_relative '../../security_operation/role_module.rb'
 		before_action :get_cart
 		before_action :get_user, only: %i[provide]
 		before_action :get_cart_item, only: %i[remove_cart]
 		before_action :get_product, only: %i[add_cart]
 		before_action :authenticate_user!
+		before_action -> {check_user_roles(["user"])}
 
 		def index
 			render json: @cart.as_json(include: {cart_items: {include: :product}})
@@ -44,7 +46,7 @@ module Api
 					render json: "Provide accepted"
 				else
 					render json: @order.errors
-				endrails
+				end
 			else
 				render json: "Cart is empty"
 			end

@@ -1,7 +1,10 @@
 module Api
     class ProductsController < ApplicationController
+        require_relative '../../security_operation/role_module.rb'
         before_action :get_product, only: %i[update show destroy]
         before_action :authenticate_user!
+        before_action -> {check_user_roles(RoleModule.admin_and_super_admin)}, only: %i[update create destroy]
+        before_action -> {check_user_roles(RoleModule.all_roles)}, only: %i[index show get_by_name]
         
         def index
             @products = Product.order(created_at: :asc)
@@ -37,7 +40,6 @@ module Api
 
         def create
             @product = Product.create(product_params)
-            authorize(@product)
             if @product.valid?
                 @product.save
                 @message = "Product Created"
@@ -49,7 +51,6 @@ module Api
         end
 
         def update
-            authorize(@product)
             unless @product.blank?
                 @product.update(product_params)
                 @message = "Product Updated"
@@ -61,7 +62,6 @@ module Api
         end
 
         def destroy
-            authorize(@product)
             unless @product.blank?
                 @product.destroy
                 @message = "Product Destroyed"

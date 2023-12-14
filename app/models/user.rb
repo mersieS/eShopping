@@ -7,11 +7,11 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :validatable
   include DeviseTokenAuth::Concerns::User
 
-  enum role: %i[user admin superadmin]
-
   has_one :cart, dependent: :destroy
+  has_one :user_role, dependent: :destroy
   has_many :orders, dependent: :destroy
   after_create :create_cart
+  after_create :assign_role
 
   validates :name, presence: true
   validates :username, presence: true
@@ -19,5 +19,9 @@ class User < ActiveRecord::Base
   private
     def create_cart
       Cart.create(user_id: self.id)
+    end
+
+    def assign_role
+      UserRole.create(user_id: self.id, role_id: 1)
     end
 end

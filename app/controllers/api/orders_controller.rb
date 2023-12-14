@@ -1,8 +1,11 @@
 module Api    
     class OrdersController < ApplicationController
+        require_relative '../../security_operation/role_module.rb'
         before_action :get_order, only: %i[show set_order_status cancel_order]
         before_action :get_order_status, only: %i[set_order_status cancel_order]
         before_action :authenticate_user!
+        before_action -> {check_user_roles(RoleModule.admin_and_super_admin)}, only: %i[index show set_order_status cancel_order]
+        before_action -> {check_user_roles(["user"])}, only: %i[get_by_name]
 
         def index
             order = Order.order(created_at: :asc)
@@ -18,10 +21,10 @@ module Api
         end
 
         def get_by_username
-            @user = User.find_by(username: params[:user_name])
+            @user = current_user
             @orders = @user.orders
             unless @orders.blank?
-                render json: @orders
+                render json: @orders.as_json(include: {order_items: {include: :product}})
             else
                 render json: "Bad request", status: :bad_request
             end
