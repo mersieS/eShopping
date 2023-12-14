@@ -8,8 +8,8 @@ module Api
         before_action -> {check_user_roles(["user"])}, only: %i[get_by_name]
 
         def index
-            order = Order.order(created_at: :asc)
-            render json: order.as_json(include: {order_items: {include: :product}})
+            orders = Order.order(created_at: :asc)
+            render json: orders.as_json(include: {order_items: {include: :product}})
         end
 
         def show

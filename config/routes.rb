@@ -28,6 +28,12 @@ Rails.application.routes.draw do
           post 'cancel_order'
         end
       end
+
+      resources :users do
+        collection do
+          patch 'change_role'
+        end
+      end
   end
 
   scope 'api' do
