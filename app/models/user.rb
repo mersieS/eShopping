@@ -14,7 +14,8 @@ class User < ActiveRecord::Base
   after_create :assign_role
 
   validates :name, presence: true
-  validates :username, presence: true
+  validates :username, presence: true, uniqueness: true
+
 
   private
     def create_cart
