@@ -24,7 +24,7 @@ Rails.application.routes.draw do
 
       resources :orders do
         collection do
-          get 'get_by_username'
+          get 'get_by_user'
           post 'set_order_status'
           post 'cancel_order'
         end
@@ -32,7 +32,7 @@ Rails.application.routes.draw do
 
       resources :users do
         collection do
-          patch 'change_role'
+          put 'change_role'
         end
       end
   end

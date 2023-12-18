@@ -5,7 +5,7 @@ module Api
         before_action :get_order_status, only: %i[set_order_status cancel_order]
         before_action :authenticate_user!
         before_action -> {check_user_roles(RoleModule.admin_and_super_admin)}, only: %i[index show set_order_status cancel_order]
-        before_action -> {check_user_roles(["user"])}, only: %i[get_by_name]
+        before_action -> {check_user_roles(["user"])}, only: %i[get_by_user]
 
         def index
             @orders = Order.order(created_at: :asc)
@@ -13,23 +13,24 @@ module Api
                 render :index, status: :ok
             else
                 @message = "Not have orders"
-                render :error
+                render 'error'
             end
         end
 
         def show
             unless @order.blank?
-                render json: @order.as_json(include: {order_items: {include: :product}})
+                render :show, status: :ok
             else
-                render json: "Bad request", status: :bad_request
+                @message = "Bad request"
+                render 'error', status: :bad_request
             end
         end
 
-        def get_by_username
+        def get_by_user
             @user = current_user
             @orders = @user.orders
             unless @orders.blank?
-                render json: @orders.as_json(include: {order_items: {include: :product}})
+                render 'index', status: :ok
             else
                 render json: "Bad request", status: :bad_request
             end
