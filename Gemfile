@@ -74,3 +74,7 @@ group :test do
 end
 
 gem "pundit", "~> 2.3"
+
+#Redis
+gem "redis", "~> 4.0"
+gem "redis-rails"
