@@ -11,6 +11,6 @@ module SecurityOperation
             raise Exception.new "You must give an array parameter"
         end
 
-        render json: {message: "You have not auth"} , status: 401
+        render json: {message: "You have not auth"}, status: 401
     end
 end

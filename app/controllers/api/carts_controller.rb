@@ -13,10 +13,16 @@ module Api
 		end
 
 		def add_cart
-			if !@product.blank? && !@cart.nil?
-				@cart.add_product(@product)
-				@message = "Product Added To Cart"
-				render 'show_message', status: :ok
+			if !@product.blank? && !@cart.nil?	
+
+				if @product_count < @product.quantity
+					@cart.add_product(@product)
+					@message = "Product Added To Cart"
+					render 'show_message', status: :ok
+				else
+					@message = "Not enough product"
+					render 'error'
+				end
 			else
 				@message = "Product not find"
 				render 'error', status: :bad_request
@@ -51,15 +57,12 @@ module Api
 				if @order.save
 					@cart.cart_items.each do |cart_item|
 						@order.add_product(cart_item.product)
-					end
-
-					@cart.cart_items.each do |cart_item|
 						cart_item.destroy
 					end
 					@message = "Provide accepted"
 					render 'show_message', status: :ok
 				else
-					@message = @order.errors
+					@message = @order.errors.full_messages.to_sentence
 					render 'error', status: :bad_request
 				end
 			else
@@ -67,7 +70,7 @@ module Api
 				render 'error', status: :not_found
 			end
 		end
-		
+
 		private
 
 		def get_cart
@@ -85,6 +88,7 @@ module Api
 
 		def get_product
 			@product = Product.find_by(id: params[:product_id])
+			@product_count = @cart.cart_items.where(product_id: params[:product_id]).count
 		end
 	end
 end
